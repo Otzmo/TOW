@@ -374,7 +374,7 @@ button:hover{ background:var(--maroon-dark); }
 .version-box b{ color:var(--maroon); }
 .guide .gc-table td:first-child{ font-weight:bold; }
 .guide .turnier-tabelle td:first-child{ width:9.5em; white-space:nowrap; }
-#panel-coreturnier a, #panel-coreleitfaden a{ color:var(--maroon); font-weight:600; }
+#panel-coreturnier a{ color:var(--maroon); font-weight:600; }
 .guide .termin-tabelle tr.termin-monat th{ background:var(--maroon); color:#fff; }
 .guide .termin-tabelle tr.vorbei td{ color:#9a8f7a; }
 .guide .termin-tabelle tr.naechster td{ background:#cfe3c1; font-weight:bold; }
@@ -819,26 +819,16 @@ The complete rules of The Old World can be found online.<p class="version-link">
 
 <h1>2. Terrain &amp; Battlefield</h1>
 <h2>Terrain Rules</h2>
-<p>All terrain features have clearly defined edges (area terrain). Where possible, 2D terrain is used, with 3D models placed on top for decoration. Terrain has the following properties (GermanComp 1.5.3):</p>
+<p>All terrain features have clearly defined edges (area terrain). Where possible, 2D terrain is used, with 3D models placed on top for decoration.</p>
+<p><b>All terrain features block line of sight behind them.</b> The following table lists their additional properties.</p>
 <table><tbody><tr><th>Terrain</th><th>Properties</th></tr>
-<tr><td>Hills</td><td>Vantage Point · Beyond the Crest (p. 271) · Open Ground</td></tr>
-<tr><td>High Rocks / Buildings</td><td>Impassable · Blocks line of sight (whole base)</td></tr>
-<tr><td>Woods</td><td>Woodland Boundaries (p. 270) · Arboreal Gloom (p. 270, note GW FAQ) · Difficult Terrain · Dangerous Terrain for Cavalry and units with Fly (X) · Natural Terrain</td></tr>
-<tr><td>Ruins</td><td>Cover · Difficult Terrain · Dangerous Terrain for non-Infantry</td></tr>
-<tr><td>Field</td><td>Light Cover</td></tr>
-<tr><td>Lake</td><td>Difficult Terrain · Dangerous Terrain for Infantry · No Cover · Natural Terrain</td></tr>
-<tr><td>Low Linear Obstacles</td><td>Low Linear Obstacle · Light Cover (not used on GermanComp maps)</td></tr>
+<tr><td>Woods</td><td>Cannon fire stops at the far edge · Difficult Terrain · Cover (−1 to hit) · Natural Terrain</td></tr>
+<tr><td>High Rocks / Buildings</td><td>Impassable · Cannon fire stops at the near edge</td></tr>
+<tr><td>Ruins</td><td>Cover (−1 to hit) · Difficult Terrain · Dangerous Terrain · Cannon fire stops at the far edge</td></tr>
+<tr><td>Field / Graveyard</td><td>Cover (−1 to hit) · Cannon fire stops at the far edge</td></tr>
+<tr><td>Lake / Marsh</td><td>Difficult Terrain · Dangerous Terrain · Cannon fire stops at the far edge · Natural Terrain</td></tr>
+<tr><td>Hills</td><td>Two ranks may shoot · Cannon fire stops at the far edge</td></tr>
 </tbody></table>
-<p><b>Natural Terrain:</b> Only Lakes and Woods are natural terrain.</p>
-<p><b>Cannons:</b> Cannon fire stops before leaving an Impassable &amp; line-of-sight-blocking feature, Ruins, Woods or a Hill (or a Monster) – see Gamechanger under <a href="#corearmee">Army Building</a>. You can shoot onto/into Hills, Ruins and Woods, but not over or behind them.</p>
-<h2>Cover</h2>
-<p>GermanComp uses 2D cover determination: measure line of sight and obscurement from an aerial view. Additional rules for cover from terrain features (Fields, Ruins):</p>
-<ul>
-<li><b>Light Cover:</b> A unit counts as being behind partial cover if over half of its models are within or behind the terrain. For each model, being in the terrain with only a tiny bit of its base is enough. Single models must be over half in the terrain, no matter in which direction (same as the new GW Woods).</li>
-<li><b>Cover:</b> As Light Cover, but units have the benefit of hard cover.</li>
-<li><b>Large Targets</b> do not ignore cover from terrain when shooting at other units, but cannot benefit from cover in any situation themselves.</li>
-<li>Units have cover as soon as at least one model is completely obstructed by a line-of-sight-blocking feature – be it a unit or line-of-sight-blocking terrain, including Woods.</li>
-</ul>
 
 <h1>3. Missions</h1>
 <h2>Scoring Units</h2><ul>
