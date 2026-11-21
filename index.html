@@ -2190,6 +2190,14 @@ function kartenbau(opt) {
     return piece;
   }
 
+  // Jedes Stueck muss mit mindestens einem Teil innerhalb von opt.umkreis Zoll um die Mitte liegen
+  function rectNearCenter(x, y, w, d) {
+    if (!opt.umkreis) return true;
+    const cx = cfg.w / 2, cy = cfg.h / 2;
+    const nx = Math.max(x, Math.min(cx, x + w)), ny = Math.max(y, Math.min(cy, y + d));
+    return Math.hypot(nx - cx, ny - cy) <= opt.umkreis;
+  }
+
   function rectClearOfCircle(x, y, w, d) {
     if (cfg.circle <= 0) return true;
     const cx = cfg.w / 2, cy = cfg.h / 2, rad = cfg.circle / 2;
@@ -2363,6 +2371,7 @@ function kartenbau(opt) {
         for (let x = 0; x <= cfg.w - w; x++) {
           for (let y = 0; y <= cfg.h - d; y++) {
             if (!rectClearOfCircle(x, y, w, d)) continue;
+            if (!rectNearCenter(x, y, w, d)) continue;
             if (treasures.length && !rectClearOfTreasures(x, y, w, d)) continue;
             let ok = true;
             for (const r of placedRects) {
@@ -2943,7 +2952,7 @@ function blattAkkordeon(bodyId) {
 }
 
 // zonenTiefe: Offene Feldschlacht und Unerwartete Begegnung; passAbstand: Gebirgspass
-kartenbau({ endung: '', w: 48, h: 36, kreis: 14, zonenTiefe: 10, passAbstand: 16,
+kartenbau({ endung: '', w: 48, h: 36, kreis: 14, umkreis: 16, zonenTiefe: 10, passAbstand: 16,
             speicher: 'battleMarchBuilderState', datei: 'battle-march-karte.png', auffrischen: '__refreshBuilder', ereignis: true,
             blatt: { lang: 'de', titel: 'Battle March', zone: 'Aufstellungszone', keine: 'keine', ereignis: 'Zufallsereignis', spalten: 2,
                      danach: [['Geländeregeln', () => blattAbschnitt('panel-leitfaden', 'h1', '2. Gelände', ['H1'])],
@@ -2953,7 +2962,7 @@ kartenbau({ endung: '', w: 48, h: 36, kreis: 14, zonenTiefe: 10, passAbstand: 16
                           { wert: 'landmarke', name: 'Die Ruine', art: 'ruine', regel: 'mission-2-body' },
                           { wert: 'schaetze', name: 'Schätze', art: 'schaetze', regel: 'mission-1-body' },
                           { wert: 'versorgung', name: 'Versorgungswagen', art: 'keine', regel: 'mission-3-body' }] }] });
-kartenbau({ endung: '-core', w: 72, h: 48, kreis: 18, zonenTiefe: 12, passAbstand: 24,
+kartenbau({ endung: '-core', w: 72, h: 48, kreis: 18, umkreis: 22, zonenTiefe: 12, passAbstand: 24,
             speicher: 'coreBattleBuilderState', datei: 'core-battle-karte.png', auffrischen: '__refreshCore',
             blatt: { lang: 'en', titel: 'Core Battle', zone: 'Deployment', keine: 'none', spalten: 3,
                      // englische Namen der Aufstellungszonen
