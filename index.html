@@ -2313,12 +2313,19 @@ function kartenbau(opt) {
       ? { x: cfg.w / 2 - towerType.w / 2, y: cfg.h / 2 - towerType.d / 2, w: towerType.w, d: towerType.d }
       : null;
 
+    /* Immer 6 Gelaendestuecke: 2 Waelder, 1 Gebaeude, 1 Huegel und der Rest zufaellig aus See,
+       Ruine und Feld (verschiedene). Ein Mittelstueck (Turm/Ruine der Mission) zaehlt mit. */
+    const typ = name => defaultTypes.find(t => t.name === name);
+    const pool = ['See', 'Ruine', 'Feld'].filter(n => n !== mitteStueck);
+    const extra = [];
+    while (extra.length < (landmark ? 1 : 2)) extra.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    const auswahl = ['Wald', 'Wald', 'Gebäude', 'Hügel', ...extra].map(typ).filter(Boolean);
+
     function attemptPlacement() {
       const placedRects = [];
       if (lmRect) placedRects.push(lmRect);
-      const order = defaultTypes
+      const order = auswahl
         .map((type, idx) => ({ type, idx, area: type.w * type.d }))
-        .filter(({ type }) => landmark ? (type.name !== 'Ruine' && type.name !== 'Turm') : type.name !== 'Turm')
         .sort((a, b) => b.area - a.area);
 
       // gap = geforderter Mindestabstand; 0 bedeutet: darf sich beruehren, aber nie ueberlappen
@@ -2341,7 +2348,7 @@ function kartenbau(opt) {
         return candidates[Math.floor(Math.random() * candidates.length)];
       }
 
-      const results = new Array(defaultTypes.length);
+      const results = new Array(auswahl.length);
       let allOk = true;
 
       order.forEach(({ type, idx }) => {
