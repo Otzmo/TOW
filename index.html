@@ -873,7 +873,7 @@ The complete rules of The Old World can be found online.<p class="version-link">
 <div class="acc">
 <button type="button" class="acc-head" aria-expanded="false" aria-controls="core-obj-1b-body"><span class="acc-title">Domination <span class="italic">(End of player turn)</span></span><span class="acc-icon" aria-hidden="true">▸</span></button>
 <div class="acc-body" id="core-obj-1b-body" role="region" hidden="">
-<p><b>30 Victory Points</b> per scoring.</p><p>To score a Quarter, a unit must be <b>completely within</b> that Quarter.</p><p>Each unit can only score one Quarter and counts only models from scoring units.</p>
+<p><b>30 Victory Points</b> per scoring.</p><p>To score a Quarter, a unit must be <b>completely within</b> that Quarter.</p><p>Each unit can only score one Quarter and only one scoring unit counts.</p>
 </div>
 </div>
 <div class="acc">
@@ -884,10 +884,33 @@ The complete rules of The Old World can be found online.<p class="version-link">
 </div>
 </div>
 <div class="acc">
-<button type="button" class="acc-head" aria-expanded="false" aria-controls="core-obj-4-body"><span class="acc-title">The Ruin <span class="italic">(End of game)</span></span><span class="acc-icon" aria-hidden="true">▸</span></button>
-<div class="acc-body" id="core-obj-4-body" role="region" hidden="">
-<p>The ruin is a <b>ruin, 7" × 7"</b>, placed in the <b>centre of the battlefield</b>.</p>
-<p><b>Controlling the Ruin:</b> The ruin is controlled by a scoring unit that is <b>completely within</b> it.</p>
+<button type="button" class="acc-head" aria-expanded="false" aria-controls="core-obj-koth-body"><span class="acc-title">King of the Hill <span class="italic">(End of player turn)</span></span><span class="acc-icon" aria-hidden="true">▸</span></button>
+<div class="acc-body" id="core-obj-koth-body" role="region" hidden="">
+<p>A <b>hill, 8" × 6"</b>, is placed in the <b>centre of the battlefield</b>.</p>
+<p><b>Controlling the Hill:</b> The hill is controlled by a scoring unit that is <b>completely on</b> it.</p>
+<p><b>90 VP</b> per Scoring.</p>
+</div>
+</div>
+<div class="acc">
+<button type="button" class="acc-head" aria-expanded="false" aria-controls="core-obj-sl-ende-body"><span class="acc-title">Strategic Locations <span class="italic">(End of game)</span></span><span class="acc-icon" aria-hidden="true">▸</span></button>
+<div class="acc-body" id="core-obj-sl-ende-body" role="region" hidden="">
+<p>There are <b>3</b> strategic locations.</p>
+<p>Each strategic location is marked by a <b>40 mm round base</b>.</p>
+<p><b>Controlling a Strategic Location:</b> A strategic location is controlled by a scoring unit within <b>6"</b> of it.</p>
+<p><b>100 Victory Points</b> per strategic location at the end of the game.</p>
+</div>
+</div>
+<div class="acc">
+<button type="button" class="acc-head" aria-expanded="false" aria-controls="core-obj-dom-ende-body"><span class="acc-title">Domination <span class="italic">(End of game)</span></span><span class="acc-icon" aria-hidden="true">▸</span></button>
+<div class="acc-body" id="core-obj-dom-ende-body" role="region" hidden="">
+<p><b>100 Victory Points</b> per Quarter at the end of the game.</p><p>To score a Quarter, a unit must be <b>completely within</b> that Quarter.</p><p>Each unit can only score one Quarter and only one scoring unit counts.</p>
+</div>
+</div>
+<div class="acc">
+<button type="button" class="acc-head" aria-expanded="false" aria-controls="core-obj-koth-ende-body"><span class="acc-title">King of the Hill <span class="italic">(End of game)</span></span><span class="acc-icon" aria-hidden="true">▸</span></button>
+<div class="acc-body" id="core-obj-koth-ende-body" role="region" hidden="">
+<p>A <b>hill, 8" × 6"</b>, is placed in the <b>centre of the battlefield</b>.</p>
+<p><b>Controlling the Hill:</b> The hill is controlled by a scoring unit that is <b>completely on</b> it.</p>
 <p><b>300 VP</b> per Scoring (300 total).</p>
 </div>
 </div>
@@ -1645,7 +1668,7 @@ function kartenbau(opt) {
 
   /* Missionen kommen aus den Optionen, in Gruppen (Core Battle: End of player
      turn / End of game). Pro Gruppe wird beim Wuerfeln eine Mission gezogen.
-     art sagt, was auf der Karte passiert: 'turm' = Turm in der Mitte, 'ruine' = Ruine in der Mitte,
+     art sagt, was auf der Karte passiert: 'turm' = Turm in der Mitte, 'ruine' = Ruine in der Mitte, 'huegel' = Huegel in der Mitte,
      'schaetze' = drei Schaetze, 'keine' = nichts, oder { varianten: [...] } mit
      festen Missionszielen als Anteile von Breite und Tiefe - eine der Varianten
      wird beim Wuerfeln gewaehlt. */
@@ -2276,14 +2299,18 @@ function kartenbau(opt) {
     for (let versuch = 0; versuch < 30; versuch++) {
       gezogen = GRUPPEN.map(g => { const w = angehaktIn(g.div); return w.length ? zufallAus(w) : null; });
       const arten = gezogen.map(missionsArt);
-      if (!((arten.includes('turm') || arten.includes('ruine')) && arten.some(mitteZiel))) break;
+      // dieselbe Mission (z. B. King of the Hill) nicht in zwei Gruppen, und hoechstens ein Ziel genau in der Mitte
+      const namen = gezogen.map(missionsName);
+      const doppelt = namen.some((n, i) => n && namen.indexOf(n) !== i);
+      const inDerMitte = arten.filter(a => mitteZiel(a) || a === 'turm' || a === 'ruine' || a === 'huegel').length;
+      if (!doppelt && inDerMitte <= 1) break;
     }
     wurf = { zone: chosen, missionen: gezogen };
     if (opt.ereignis) wurf.ereignis = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);   // 2W6
     zeigeWurf();
     const arten = gezogen.map(missionsArt);
-    // Mittelstueck: Turm oder Ruine (Die Ruine / The Ruin), genau mittig; die normale Ruine entfaellt dann
-    const mitteStueck = arten.includes('turm') ? 'Turm' : arten.includes('ruine') ? 'Ruine' : null;
+    // Mittelstueck: Turm, Ruine (Die Ruine) oder Huegel (King of the Hill), genau mittig
+    const mitteStueck = arten.includes('turm') ? 'Turm' : arten.includes('ruine') ? 'Ruine' : arten.includes('huegel') ? 'Hügel' : null;
     const landmark = !!mitteStueck;
     pieces = [];
     board.querySelectorAll('.piece').forEach(el => el.remove());
@@ -2317,9 +2344,11 @@ function kartenbau(opt) {
        Ruine und Feld (verschiedene). Ein Mittelstueck (Turm/Ruine der Mission) zaehlt mit. */
     const typ = name => defaultTypes.find(t => t.name === name);
     const pool = ['See', 'Ruine', 'Feld'].filter(n => n !== mitteStueck);
+    // Steht der Huegel in der Mitte (King of the Hill), ist er der Huegel der Karte; sonst zaehlt das Mittelstueck extra
+    const huegelMitte = mitteStueck === 'Hügel';
     const extra = [];
-    while (extra.length < (landmark ? 1 : 2)) extra.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
-    const auswahl = ['Wald', 'Wald', 'Gebäude', 'Hügel', ...extra].map(typ).filter(Boolean);
+    while (extra.length < (landmark && !huegelMitte ? 1 : 2)) extra.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    const auswahl = ['Wald', 'Wald', 'Gebäude', ...(huegelMitte ? [] : ['Hügel']), ...extra].map(typ).filter(Boolean);
 
     function attemptPlacement() {
       const placedRects = [];
@@ -2944,9 +2973,14 @@ kartenbau({ endung: '-core', w: 72, h: 48, kreis: 18, zonenTiefe: 12, passAbstan
                   art: { varianten: [[[0.25, 0.5], [0.5, 0.5], [0.75, 0.5]],
                                      [[0.5, 0.25], [0.5, 0.5], [0.5, 0.75]]] } },
                 { wert: 'domination', name: 'Domination', art: 'keine', regel: 'core-obj-1b-body' },
-                { wert: 'banners', name: 'Hold the Banners High', art: 'keine', regel: 'core-obj-3-body' }] },
+                { wert: 'banners', name: 'Hold the Banners High', art: 'keine', regel: 'core-obj-3-body' },
+                { wert: 'koth', name: 'King of the Hill', art: 'huegel', regel: 'core-obj-koth-body' }] },
               { titel: 'Mission – End of game', kurz: 'End of game', missionen: [
-                { wert: 'special', name: 'The Ruin', art: 'ruine', regel: 'core-obj-4-body' },
+                { wert: 'koth-ende', name: 'King of the Hill', art: 'huegel', regel: 'core-obj-koth-ende-body' },
+                { wert: 'domination-ende', name: 'Domination', art: 'keine', regel: 'core-obj-dom-ende-body' },
+                { wert: 'location3-ende', name: 'Strategic Locations 3', regel: 'core-obj-sl-ende-body',
+                  art: { varianten: [[[0.25, 0.5], [0.5, 0.5], [0.75, 0.5]],
+                                     [[0.5, 0.25], [0.5, 0.5], [0.5, 0.75]]] } },
                 { wert: 'baggage', name: 'Baggage Train', art: 'keine', regel: 'core-obj-5-body' },
                 { wert: 'holdline', name: 'Hold the Line', art: 'keine', regel: 'core-obj-6-body' }] }] });
 
