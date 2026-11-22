@@ -314,6 +314,29 @@ def verarbeite(s):
                 p = pfad_aus_ziel(x)
                 if xf.get("name") or xf.get("question"):
                     teile.append(f"<p>{link(p or '', xf.get('name') or xf.get('question'))}</p>")
+    # Sonderregeln einer Armeeliste (z. B. „Sea-Born Raiders“ bei Wolves of the Sea):
+    # Sie stehen als relatedLinks samt Text an der Liste und werden direkt über der FAQ angezeigt.
+    armeeregeln = set()
+    if pfad.startswith("/warhammer-armies/") and "Composition List" in text_aus("".join(teile)):
+        regeln = []
+        for x in f.get("relatedLinks") or []:
+            xf = x.get("fields") if isinstance(x, dict) else None
+            if not xf or not xf.get("name"):
+                continue
+            p = pfad_aus_ziel(x) or ""
+            if p.startswith("/warhammer-armies/"):
+                continue   # Verweis auf eine andere Armeelisten-Seite, keine Sonderregel
+            kasten = f'<h3>{link(p, xf["name"])}</h3>'
+            if isinstance(xf.get("description"), dict):
+                fl = text_aus(rt(xf["description"]))
+                if fl:
+                    kasten += f'<p class="flavour">{html.escape(fl)}</p>'
+            if isinstance(xf.get("body"), dict):
+                kasten += rt(xf["body"])
+            regeln.append(f'<div class="armeeregel">{kasten}</div>')
+            armeeregeln.add(xf["name"])
+        if regeln:
+            teile.append("<h2>Sonderregeln dieser Armeeliste</h2>" + "".join(regeln))
     # FAQ-Querverweise und Nachbarn
     cr = pp.get("crossReference") or {}
     faqs = [x for x in (cr.get("faq") or []) if (x.get("fields") or {}).get("question")]
@@ -322,7 +345,7 @@ def verarbeite(s):
             f"<li>{link(faq_pfad.get(x['fields'].get('slug'), ''), x['fields']['question'])}</li>" for x in faqs) + "</ul>")
     for k in cr:
         if k != "faq" and isinstance(cr[k], list) and cr[k]:
-            items = [x for x in cr[k] if (x.get("fields") or {}).get("name")]
+            items = [x for x in cr[k] if (x.get("fields") or {}).get("name") and x["fields"]["name"] not in armeeregeln]
             if items:
                 teile.append(f'<h2>Siehe auch</h2><ul class="inhalt">' + "".join(f"<li>{link(pfad_aus_ziel(x) or '', x['fields']['name'])}</li>" for x in items) + "</ul>")
     for k, l in (("prev", "v"), ("next", "n")):
