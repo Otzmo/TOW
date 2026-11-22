@@ -1,0 +1,6 @@
+{
+ "verfahren": "PBKDF2-SHA256 / AES-256-GCM / gzip",
+ "runden": 600000,
+ "salz": "LdEnkSFOcQ3hdVSl9H1YgA==",
+ "pruefung": "tXbyeP+P+nbkqavWib5qUv0PCGoYndVkxJK51T8RfFRhFO/dZhyATYXraivlXXoF"
+}

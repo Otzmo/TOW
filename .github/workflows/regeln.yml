@@ -1,0 +1,45 @@
+# Lädt jeden Montag alle Regeln von tow.whfb.app neu, bereitet sie auf und verschlüsselt sie
+# mit dem Spieler-Passwort (Secret REGELN_PASSWORT). Committet nur, wenn sich etwas geändert hat.
+name: Regelindex aktualisieren
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regeln
+  cancel-in-progress: false
+
+jobs:
+  regeln:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+      - name: Alle Seiten laden
+        run: python3 tools/regeln/scrape.py /tmp/regeln/raw
+      - name: Aufbereiten, Bilder laden, verschlüsseln
+        env:
+          REGELN_PASSWORT: ${{ secrets.REGELN_PASSWORT }}
+        run: |
+          python3 tools/regeln/build.py /tmp/regeln/raw /tmp/regeln/daten /tmp/regeln/bilder
+          python3 tools/regeln/bilder.py /tmp/regeln/daten/bilder.json /tmp/regeln/bilder
+          python3 tools/regeln/build.py /tmp/regeln/raw /tmp/regeln/daten /tmp/regeln/bilder
+          python3 tools/regeln/verschluesseln.py /tmp/regeln/daten regeln/daten
+      - name: Commit, falls geändert
+        run: |
+          if [ -z "$(git status --porcelain -- regeln/daten)" ]; then echo "Keine Änderungen."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add regeln/daten
+          git commit -m "Regelindex aktualisiert $(date +%F)"
+          git pull --rebase
+          git push

@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regelindex Alte Welt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+[hidden] { display: none !important; }
+@font-face{ font-family:"Crimson Pro"; font-style:normal; font-weight:200 900; font-display:swap; src:url(../fonts/crimson-pro.woff2) format("woff2"), url(fonts/crimson-pro.woff2) format("woff2"); }
+@font-face{ font-family:"Crimson Pro"; font-style:italic; font-weight:200 900; font-display:swap; src:url(../fonts/crimson-pro-italic.woff2) format("woff2"), url(fonts/crimson-pro-italic.woff2) format("woff2"); }
+@font-face{ font-family:"IM Fell English SC"; font-style:normal; font-weight:400; font-display:swap; src:url(../fonts/im-fell-english-sc.woff2) format("woff2"), url(fonts/im-fell-english-sc.woff2) format("woff2"); }
+/* Layout: App-Hülle für das Handy, max. 680px breit, Suche oben, Daumenleiste unten. Farben nach Designsystem „Alte Welt“. */
+:root {
+  --bg: #e6dbc2; --bg-rand: #d3c19a; --flaeche: #f3ecdc; --kopf: #ebe1c9; --sand: #e3d6b8;
+  --markierung: #e8d9b5; --linie: #b9a77f; --tinte: #2b2116; --leise: #5a4a36;
+  --akzent: #4a3b28; --akzent-tief: #2e2418; --auf-akzent: #ffffff; --bronze: #8a6a3b;
+  --wert-bg: #eadbb6; --wert-fg: #5b3a14; --ok: #5d8a3a;
+  --schatten: 0 2px 6px rgba(42,38,34,0.08); --sheet-schatten: 0 -6px 24px rgba(42,38,34,0.22);
+  --font-titel: "IM Fell English SC", Georgia, serif;
+  --font-text: "Crimson Pro", Georgia, "Times New Roman", serif;
+  --groesse: 17px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1610; --bg-rand: #120e0a; --flaeche: #261f17; --kopf: #211b14; --sand: #30271c;
+    --markierung: #3a2f22; --linie: #54452f; --tinte: #efe5cf; --leise: #bfae8a;
+    --akzent: #d6b47a; --akzent-tief: #e8c98f; --auf-akzent: #1b1610; --bronze: #d6b47a;
+    --wert-bg: #3d3020; --wert-fg: #f0cf8e; --ok: #8fbf63;
+    --schatten: 0 2px 6px rgba(0,0,0,0.3); --sheet-schatten: 0 -6px 24px rgba(0,0,0,0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b1610; --bg-rand: #120e0a; --flaeche: #261f17; --kopf: #211b14; --sand: #30271c;
+  --markierung: #3a2f22; --linie: #54452f; --tinte: #efe5cf; --leise: #bfae8a;
+  --akzent: #d6b47a; --akzent-tief: #e8c98f; --auf-akzent: #1b1610; --bronze: #d6b47a;
+  --wert-bg: #3d3020; --wert-fg: #f0cf8e; --ok: #8fbf63;
+  --schatten: 0 2px 6px rgba(0,0,0,0.3); --sheet-schatten: 0 -6px 24px rgba(0,0,0,0.5);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; color: var(--tinte); font-family: var(--font-text); font-size: var(--groesse); line-height: 1.5;
+  background: radial-gradient(ellipse at 50% 30%, var(--flaeche) 0%, var(--bg) 60%, var(--bg-rand) 100%) fixed;
+  background-color: var(--bg);
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--kopf); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--bronze); outline-offset: 2px; }
+.app { max-width: 680px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; }
+
+.kopf {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--kopf);
+  border-bottom: 1px solid var(--linie); padding-block: 10px; display: grid; gap: 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.kopf-zeile { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.marke { font-family: var(--font-titel); font-size: 20px; letter-spacing: 0.04em; line-height: 1.1; min-width: 0; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
+.marke small { font-family: var(--font-text); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leise); display: block; }
+.icon-knopf { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border: 1px solid var(--linie); background: var(--flaeche); border-radius: 4px; cursor: pointer; }
+.icon-knopf svg { width: 20px; height: 20px; }
+.suchfeld { position: relative; }
+.suchfeld input { width: 100%; font: inherit; font-size: 18px; color: var(--tinte); background: var(--flaeche); border: 2px solid var(--akzent); border-radius: 4px; padding: 9px 40px; }
+.suchfeld input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.suchfeld input::placeholder { color: var(--leise); }
+.suchfeld .lupe { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--leise); pointer-events: none; }
+.suchfeld .leeren { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: 0; background: none; cursor: pointer; color: var(--leise); font-size: 22px; line-height: 1; }
+.status { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--leise); }
+.status i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); display: inline-block; flex: none; }
+
+main {
+  flex: 1; padding-block: 16px 100px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-content: start;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main > * { min-width: 0; }
+.label { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leise); margin: 0 0 6px; }
+h1.kapitel { font-size: 28px; line-height: 1.2; margin: 0; text-wrap: balance; padding-bottom: 6px; border-bottom: 2px solid; border-image: linear-gradient(90deg, var(--tinte) 70%, transparent) 1; }
+.karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: 4px; box-shadow: var(--schatten); padding: 14px 16px; min-width: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--akzent); background: var(--flaeche); color: var(--tinte); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 16px; }
+.chip:hover { background: var(--sand); }
+.chip.aktiv { background: var(--akzent); color: var(--auf-akzent); }
+.liste { list-style: none; margin: 0; padding: 0; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 4px; min-width: 0; }
+.liste li { min-width: 0; }
+.liste li + li { border-top: 1px solid var(--linie); }
+.zeile { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; padding: 11px 14px; cursor: pointer; min-width: 0; }
+.zeile:hover { background: var(--markierung); }
+.zeile .txt { flex: 1; min-width: 0; }
+.zeile b { display: block; font-size: 18px; }
+.zeile .unter { display: block; font-size: 15px; color: var(--leise); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.zeile .pfeil { color: var(--leise); flex: none; }
+.art { display: inline-block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--linie); border-radius: 3px; padding: 0 5px; margin-right: 6px; color: var(--leise); vertical-align: 2px; }
+mark.treffer { background: var(--wert-bg); color: inherit; border-radius: 2px; padding: 0 1px; }
+.hinweis { font-size: 15px; color: var(--leise); margin: 0; }
+.mehr { justify-self: start; }
+.raster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.kachel { text-align: left; cursor: pointer; background: var(--flaeche); border: 1px solid var(--linie); border-radius: 4px; padding: 12px; display: grid; gap: 2px; min-width: 0; }
+.kachel:hover { background: var(--markierung); }
+.kachel b { font-size: 18px; }
+.kachel span { font-size: 14px; color: var(--leise); }
+
+/* Regelseite */
+.regel-kopf { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.regel-kopf > div { min-width: 0; }
+.brot { background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leise); text-decoration: underline; text-underline-offset: 3px; margin-bottom: 6px; }
+.meta { font-size: 14px; color: var(--leise); margin: 6px 0 0; }
+.stern { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border: 1px solid var(--akzent); border-radius: 4px; background: var(--flaeche); cursor: pointer; color: var(--akzent); }
+.stern svg { width: 22px; height: 22px; }
+.stern[aria-pressed="true"] { background: var(--akzent); color: var(--auf-akzent); }
+.regeltext { min-width: 0; }
+.regeltext p, .regeltext li { overflow-wrap: anywhere; }
+.regeltext > :first-child { margin-top: 0; }
+.regeltext p, .regeltext ul, .regeltext ol, .regeltext blockquote { margin: 0 0 10px; max-width: 68ch; }
+.regeltext ul, .regeltext ol { padding-left: 22px; }
+.regeltext li { margin-bottom: 4px; }
+.regeltext h2 { font-size: 20px; margin: 18px 0 6px; }
+.regeltext h3 { font-size: 18px; margin: 14px 0 4px; }
+.regeltext h4 { font-size: 17px; margin: 12px 0 4px; }
+.regeltext blockquote { border-left: 3px solid var(--linie); padding-left: 12px; color: var(--leise); font-style: italic; }
+.regeltext .flavour { font-style: italic; color: var(--leise); }
+.regeltext hr { border: 0; border-top: 1px solid var(--linie); margin: 14px 0; }
+.regeltext a { color: var(--akzent); font-weight: 600; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.regeltext a:hover { color: var(--akzent-tief); }
+.regeltext a[href] { text-decoration-style: solid; }
+.regeltext .tabelle { overflow-x: auto; margin: 0 0 12px; border: 1px solid var(--linie); border-radius: 4px; }
+.regeltext table { border-collapse: collapse; width: 100%; font-size: 16px; font-variant-numeric: tabular-nums; }
+.regeltext th, .regeltext td { border-bottom: 1px solid var(--linie); padding: 5px 8px; text-align: left; vertical-align: top; }
+.regeltext tr:last-child > * { border-bottom: 0; }
+.regeltext tr:first-child th { background: var(--sand); }
+.regeltext .profil table { font-size: 15px; }
+.regeltext .profil th, .regeltext .profil td { text-align: center; white-space: nowrap; padding: 5px 4px; }
+.regeltext .profil th.name { text-align: left; background: none; white-space: normal; min-width: 5.5em; padding-left: 8px; }
+.regeltext .profil tr:first-child th { background: var(--sand); }
+.regeltext figure { margin: 0 0 12px; }
+.regeltext figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--linie); border-radius: 4px; background: #fff; }
+.regeltext figcaption, .bild-platz { font-size: 14px; color: var(--leise); display: block; margin-top: 4px; }
+.regeltext .infos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 0 0 12px; }
+.regeltext .infos div { border: 1px solid var(--linie); border-radius: 4px; padding: 6px 10px; }
+.regeltext .infos dt { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leise); }
+.regeltext .infos dd { margin: 0; font-weight: 600; }
+.regeltext .regelchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.regeltext .regelchips > * { border: 1px solid var(--akzent); border-radius: 999px; padding: 1px 10px; text-decoration: none; font-weight: 400; color: var(--tinte); }
+.regeltext .regelchips > a:hover { background: var(--sand); }
+.regeltext ul.inhalt { list-style: none; padding: 0; columns: 2 220px; column-gap: 20px; }
+.regeltext ul.inhalt li { break-inside: avoid; }
+.regeltext details.faq { border: 1px solid var(--linie); border-radius: 4px; margin: 0 0 8px; background: var(--flaeche); }
+.regeltext details.faq summary { cursor: pointer; padding: 8px 12px; font-weight: 600; background: var(--sand); border-radius: 4px; }
+.regeltext details.faq[open] summary { border-radius: 4px 4px 0 0; border-bottom: 1px solid var(--linie); }
+.regeltext details.faq > :not(summary) { margin-left: 12px; margin-right: 12px; }
+.regeltext details.faq > :nth-child(2) { margin-top: 8px; }
+.regeltext .eingebettet { border: 1px solid var(--linie); border-radius: 4px; padding: 8px 12px; margin: 0 0 12px; }
+.wert { background: var(--wert-bg); color: var(--wert-fg); font-weight: 700; border-radius: 3px; padding: 0 3px; white-space: nowrap; }
+.nachbarn { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.knopf-rand { border: 1px solid var(--akzent); background: var(--flaeche); border-radius: 4px; padding: 6px 12px; cursor: pointer; text-align: left; }
+.knopf-rand:hover { background: var(--sand); }
+.knopf { background: var(--akzent); color: var(--auf-akzent); border: 0; border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+.knopf:hover { background: var(--akzent-tief); }
+.spick { display: grid; gap: 12px; }
+.spick h2 { font-size: 20px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.leer { text-align: center; padding: 24px 16px; }
+.leer p { margin: 0 0 8px; }
+.laden { color: var(--leise); font-style: italic; }
+
+.schleier { position: fixed; inset: 0; background: rgba(20,14,8,0.4); z-index: 40; opacity: 0; transition: opacity .2s; }
+.schleier.offen { opacity: 1; }
+.sheet {
+  position: fixed; left: 50%; bottom: 0; z-index: 41; width: 100%; max-width: 680px; transform: translate(-50%, 100%); transition: transform .25s ease;
+  background: var(--flaeche); border-top: 1px solid var(--linie); border-radius: 12px 12px 0 0; box-shadow: var(--sheet-schatten);
+  max-height: 72vh; overflow-y: auto; padding-block: 8px calc(20px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
+}
+.sheet.offen { transform: translate(-50%, 0); }
+.griff { width: 40px; height: 4px; border-radius: 2px; background: var(--linie); margin: 0 auto 12px; }
+.sheet h2.titel { font-size: 22px; margin: 0 0 8px; }
+.sheet .aktionen { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; position: sticky; bottom: 0; background: var(--flaeche); padding-top: 8px; }
+.einst { display: grid; gap: 14px; }
+.einst-zeile { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--akzent); border-radius: 4px; overflow: hidden; }
+.seg button { border: 0; background: var(--flaeche); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--akzent); }
+.seg button[aria-pressed="true"] { background: var(--akzent); color: var(--auf-akzent); }
+
+.leiste {
+  position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 25; width: 100%; max-width: 680px;
+  background: var(--kopf); border-top: 1px solid var(--linie); display: grid; grid-template-columns: repeat(4, 1fr);
+  padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+}
+.leiste button { border: 0; background: none; cursor: pointer; padding: 8px 4px 9px; display: grid; justify-items: center; gap: 2px; font-size: 13px; color: var(--leise); position: relative; }
+.leiste svg { width: 24px; height: 24px; }
+.leiste button[aria-current="page"] { color: var(--akzent); font-weight: 700; }
+.leiste button[aria-current="page"]::before { content: ""; position: absolute; top: 0; left: 25%; right: 25%; height: 3px; background: var(--akzent); border-radius: 0 0 3px 3px; }
+.zahl { position: absolute; top: 4px; left: calc(50% + 8px); background: var(--akzent); color: var(--auf-akzent); font-size: 11px; border-radius: 999px; min-width: 17px; padding: 0 4px; line-height: 17px; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .sheet, .schleier { transition: none; } }
+.tor { display: grid; gap: 14px; max-width: 420px; justify-self: center; width: 100%; margin-top: 8vh; }
+.tor h1 { font-family: var(--font-titel); font-weight: 400; font-size: 30px; letter-spacing: 0.04em; margin: 0; text-align: center; }
+.tor form { display: grid; gap: 10px; }
+.tor input[type=password] { font: inherit; font-size: 18px; color: var(--tinte); background: var(--flaeche); border: 2px solid var(--akzent); border-radius: 4px; padding: 9px 12px; width: 100%; }
+.tor label.merken { display: flex; gap: 8px; align-items: center; font-size: 16px; }
+.tor .fehler { color: #8b1e24; margin: 0; }
+:root[data-theme="dark"] .tor .fehler { color: #f0a0a0; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tor .fehler { color: #f0a0a0; } }
+.gesperrt .suchfeld, .gesperrt .leiste { display: none; }
+.gesperrt #einst-knopf { visibility: hidden; }
+.hinweis a { color: var(--akzent); }
+</style>
+</head>
+<body>
+<div class="app gesperrt" id="app">
+  <header class="kopf">
+    <div class="kopf-zeile">
+      <button class="marke" data-ziel="start" aria-label="Zur Startseite des Regelindex">OTZMO-TOW<small>Regelindex</small></button>
+      <button class="icon-knopf" id="einst-knopf" aria-label="Anzeige und Infos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      </button>
+    </div>
+    <div class="suchfeld">
+      <svg class="lupe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="suche" type="search" placeholder="Regel, Einheit oder Begriff suchen …" autocomplete="off" aria-label="Suchen">
+      <button class="leeren" id="leeren" aria-label="Suche leeren" hidden>×</button>
+    </div>
+    <div class="status" id="status"><i></i> Regeln werden geladen …</div>
+  </header>
+  <main id="inhalt" aria-live="polite"><p class="laden">Wird vorbereitet …</p></main>
+  <nav class="leiste" aria-label="Hauptnavigation">
+    <button data-ziel="start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Suche</button>
+    <button data-ziel="armee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>Meine Armee<span class="zahl" id="fav-zahl" hidden></span></button>
+    <button data-ziel="phasen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Phasen</button>
+    <button data-ziel="verlauf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Verlauf</button>
+  </nav>
+</div>
+<div class="schleier" id="schleier" hidden></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-titel" hidden></aside>
+
+<script src="minisearch.min.js"></script>
+<script>
+const QUELLE = "https://tow.whfb.app";
+const PHASEN = [
+  { p: "/the-strategy-phase", n: "Strategie" }, { p: "/the-movement-phase", n: "Bewegung" },
+  { p: "/the-shooting-phase", n: "Schießen" }, { p: "/the-combat-phase", n: "Nahkampf" },
+  { p: "/the-psychology-of-war", n: "Psychologie" }, { p: "/special-rules", n: "Sonderregeln" }
+];
+const ART = { gegenstand: "Gegenstand", zauber: "Zauber", regel: "Regel", kapitel: "Kapitel", einheit: "Einheit", armee: "Armee", faq: "FAQ", sonstiges: "Seite" };
+
+const speicher = {
+  lies(k, d) { try { const v = localStorage.getItem("rix-" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  schreib(k, v) { try { localStorage.setItem("rix-" + k, JSON.stringify(v)); } catch {} }
+};
+let favs = speicher.lies("favs2", []);
+let verlauf = speicher.lies("verlauf2", []);
+let phase = speicher.lies("phase", "/the-combat-phase");
+const einst = speicher.lies("einst", { groesse: 17, theme: "system" });
+function wendeEinstAn() {
+  document.documentElement.style.setProperty("--groesse", einst.groesse + "px");
+  if (einst.theme === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", einst.theme);
+}
+wendeEinstAn();
+
+let INDEX = [], NACH_PFAD = {}, suchindex = null, STAND = "";
+const teile = {};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const $ = id => document.getElementById(id);
+const inhalt = $("inhalt"), eingabe = $("suche");
+
+// ---------- Entschlüsselung (AES-256-GCM, Schlüssel per PBKDF2 aus dem Passwort) ----------
+let SCHLUESSEL = null;
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function leiteAb(pw, info) {
+  const basis = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(info.salz), iterations: info.runden, hash: "SHA-256" },
+    basis, { name: "AES-GCM", length: 256 }, true, ["decrypt"]);
+}
+async function entschluessle(bytes, key = SCHLUESSEL) {
+  return new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes.slice(0, 12) }, key, bytes.slice(12)));
+}
+async function ladeVerschluesselt(pfad) {
+  const r = await fetch(pfad, { cache: "no-cache" });
+  if (!r.ok) throw new Error(r.status);
+  const roh = await entschluessle(b64((await r.text()).trim()));
+  const text = await new Response(new Blob([roh]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+  return JSON.parse(text);
+}
+async function ladeTeil(f) {
+  if (!teile[f]) teile[f] = ladeVerschluesselt("daten/inhalt/" + f + ".txt").catch(e => { delete teile[f]; throw e; });
+  return teile[f];
+}
+async function ladeSeite(p) {
+  const d = NACH_PFAD[p]; if (!d) return null;
+  const t = await ladeTeil(d.f);
+  return { ...d, ...(t[p] || {}) };
+}
+
+// Pfad <-> Hash (nur Buchstaben, Ziffern, Bindestriche erlaubt)
+const pfadZuHash = p => "s" + p.replace(/\//g, "--");
+const hashZuPfad = h => h.replace(/^#?s/, "").replace(/--/g, "/");
+
+// Werte im Regeltext hervorheben: 2D6, D3, 4+, +1, -1, 6"
+function hebeWerteHervor(wurzel) {
+  const re = /(?<![\w])(\d*D\d+(?:\+\d+)?|[2-6]\+|[+\-−]\d+(?!\d)|\d+(?:\.\d+)?["”])(?![\w])/g;
+  const walker = document.createTreeWalker(wurzel, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => n.parentElement.closest("table, .wert, summary, a, h1, h2, h3, figcaption") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+  });
+  const knoten = []; while (walker.nextNode()) knoten.push(walker.currentNode);
+  for (const n of knoten) {
+    const t = n.nodeValue; re.lastIndex = 0;
+    if (!re.test(t)) continue;
+    const span = document.createElement("span");
+    span.innerHTML = esc(t).replace(re, '<span class="wert">$1</span>');
+    n.replaceWith(...span.childNodes);
+  }
+}
+
+function markiere(text, begriffe) {
+  let h = esc(text);
+  for (const w of begriffe) if (w.length > 1) h = h.replace(new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig"), '<mark class="treffer">$1</mark>');
+  return h;
+}
+function zeile(d, begriffe = [], unter) {
+  return `<li><button class="zeile" data-p="${esc(d.p)}"><span class="txt">
+    <b>${begriffe.length ? markiere(d.t, begriffe) : esc(d.t)}</b>
+    <span class="unter"><span class="art">${ART[d.k] || "Seite"}</span>${esc(unter ?? (d.c || ""))}</span></span>
+    <span class="pfeil" aria-hidden="true">›</span></button></li>`;
+}
+
+// ---------- Ansichten ----------
+let zeigeAnzahl = 30;
+function zeigeStart() {
+  const q = eingabe.value.trim();
+  if (q) return zeigeSuche(q);
+  const letzte = verlauf.slice(0, 6).map(p => NACH_PFAD[p]).filter(Boolean);
+  const armeen = INDEX.filter(d => d.k === "armee").sort((a, b) => a.t.localeCompare(b.t));
+  const kapitel = INDEX.filter(d => d.k === "kapitel").sort((a, b) => a.t.localeCompare(b.t));
+  inhalt.innerHTML = `
+    ${letzte.length ? `<section><p class="label">Zuletzt angesehen</p><div class="chips">${letzte.map(d => `<button class="chip" data-p="${esc(d.p)}">${esc(d.t)}</button>`).join("")}</div></section>` : ""}
+    <section><p class="label">Nach Spielphase</p><div class="raster">${PHASEN.slice(0, 4).map(ph => `<button class="kachel" data-phase="${ph.p}"><b>${ph.n}</b><span>${INDEX.filter(d => d.cp === ph.p).length} Regeln</span></button>`).join("")}</div></section>
+    <section><p class="label">Armeen</p><ul class="liste">${armeen.map(d => zeile(d, [], INDEX.filter(x => x.cp === d.p && x.k === "einheit").length + " Einheiten")).join("")}</ul></section>
+    <section><p class="label">Alle Kapitel</p><ul class="liste">${kapitel.map(d => zeile(d, [], INDEX.filter(x => x.cp === d.p).length + " Seiten")).join("")}</ul></section>
+    <p class="hinweis">Quelle: <a href="${QUELLE}" target="_blank" rel="noopener">tow.whfb.app</a> · Stand ${esc(new Date(STAND).toLocaleDateString("de-DE"))} · Nur für unsere Spielgruppe, bitte nicht weitergeben. · <a href="../">Zurück zu OTZMO-TOW</a></p>`;
+}
+
+function zeigeSuche(q) {
+  if (!suchindex) { inhalt.innerHTML = `<p class="laden">Suche wird vorbereitet …</p>`; return; }
+  // Erst exakt bzw. Wortanfang, nur bei wenigen Treffern mit Tippfehler-Toleranz
+  const opt = { prefix: t => t.length > 2, boost: { t: 4, c: 1 } };
+  let liste = suchindex.search(q, { ...opt, combineWith: "AND" });
+  let tippfehler = false;
+  if (liste.length < 3) {
+    const unscharf = suchindex.search(q, { ...opt, fuzzy: t => t.length >= 8 ? 2 : t.length >= 4 ? 1 : 0, combineWith: "AND" });
+    const bekannt = new Set(liste.map(e => e.id));
+    const neu = unscharf.filter(e => !bekannt.has(e.id));
+    if (neu.length) { tippfehler = !liste.length; liste = [...liste, ...neu]; }
+  }
+  const begriffe = [...new Set(liste.slice(0, 50).flatMap(e => e.terms))];
+  const exakt = liste.findIndex(e => NACH_PFAD[e.id].t.toLowerCase().replace(/ \(.*\)$/, "") === q.toLowerCase());
+  if (exakt > 0) liste = [liste[exakt], ...liste.filter((_, i) => i !== exakt)];
+  inhalt.innerHTML = `<section>
+    <p class="label">${liste.length} Treffer für „${esc(q)}“</p>
+    ${tippfehler ? `<p class="hinweis" style="margin-bottom:8px">Meintest du <b>${esc(NACH_PFAD[liste[0].id].t)}</b>? Tippfehler werden toleriert.</p>` : ""}
+    ${liste.length ? `<ul class="liste">${liste.slice(0, zeigeAnzahl).map(e => zeile(NACH_PFAD[e.id], begriffe)).join("")}</ul>
+      ${liste.length > zeigeAnzahl ? `<p style="margin-top:10px"><button class="knopf-rand" id="mehr">Weitere ${Math.min(30, liste.length - zeigeAnzahl)} anzeigen</button></p>` : ""}`
+      : `<div class="karte leer"><p>Nichts gefunden.</p><p class="hinweis">Die Regeln sind auf Englisch. Probier zum Beispiel „Fear“, „Stomp“ oder „Break test“.</p></div>`}
+  </section>`;
+}
+
+async function zeigeSeite(p, anker) {
+  const d0 = NACH_PFAD[p];
+  if (!d0) { inhalt.innerHTML = `<div class="karte leer"><p>Diese Seite gibt es im Archiv nicht.</p><p><button class="knopf-rand" data-ziel="start">Zur Startseite</button></p></div>`; return; }
+  inhalt.innerHTML = `<p class="laden">${esc(d0.t)} wird geladen …</p>`;
+  let d;
+  try { d = await ladeSeite(p); } catch { inhalt.innerHTML = `<div class="karte leer"><p>Die Seite konnte nicht geladen werden.</p><p class="hinweis">Prüfe die Verbindung und versuch es noch einmal.</p><p><button class="knopf-rand" data-p="${esc(p)}">Erneut laden</button></p></div>`; return; }
+  if (aktuellerPfad() !== p) return;
+  verlauf = [p, ...verlauf.filter(v => v !== p)].slice(0, 30); speicher.schreib("verlauf2", verlauf);
+  const istFav = favs.includes(p);
+  const meta = [d.s ? "Regelbuch S. " + d.s : "", d.u ? "aktualisiert " + new Date(d.u).toLocaleDateString("de-DE") : ""].filter(Boolean).join(" · ");
+  inhalt.innerHTML = `<article class="karte" style="display:grid;gap:12px">
+    <div class="regel-kopf"><div>
+      ${d.cp && NACH_PFAD[d.cp] ? `<button class="brot" data-p="${esc(d.cp)}">${esc(d.c)}</button>` : d.c ? `<p class="label">${esc(d.c)}</p>` : ""}
+      <h1 class="kapitel">${esc(d.t)}</h1>
+      <p class="meta"><span class="art">${ART[d.k] || "Seite"}</span>${esc(meta)}</p></div>
+      <button class="stern" data-fav="${esc(p)}" aria-pressed="${istFav}" aria-label="${istFav ? "Aus Meine Armee entfernen" : "Zu Meine Armee hinzufügen"}">
+        <svg viewBox="0 0 24 24" fill="${istFav ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
+    </div>
+    <div class="regeltext" id="regeltext">${d.h || `<p class="hinweis">Diese Seite hat keinen eigenen Text.</p>`}</div>
+    <p class="hinweis"><a href="${QUELLE}${esc(p)}" target="_blank" rel="noopener">Original auf tow.whfb.app öffnen</a></p>
+  </article>
+  <div class="nachbarn">
+    ${d.v ? `<button class="knopf-rand" data-p="${esc(d.v[0])}">‹ ${esc(d.v[1])}</button>` : "<span></span>"}
+    ${d.n ? `<button class="knopf-rand" data-p="${esc(d.n[0])}">${esc(d.n[1])} ›</button>` : ""}
+  </div>`;
+  hebeWerteHervor($("regeltext"));
+  if (anker) { const el = document.getElementById(anker); if (el) { el.open = true; el.scrollIntoView({ block: "start" }); return; } }
+  window.scrollTo(0, 0);
+}
+
+async function zeigeArmee() {
+  const liste = favs.filter(p => NACH_PFAD[p]);
+  inhalt.innerHTML = `<section><h1 class="kapitel">Meine Armee</h1>
+    <p class="hinweis" style="margin-top:8px">Deine gemerkten Regeln und Einheiten komplett auf einer Seite. Merken mit dem Stern auf jeder Seite.</p></section>
+    ${liste.length ? `<div class="spick" id="spick">${liste.map(p => `<div class="karte" data-spick="${esc(p)}"><h2><button class="knopf-rand" style="border:0;padding:0;background:none;font-weight:700" data-p="${esc(p)}">${esc(NACH_PFAD[p].t)}</button><span class="art">${ART[NACH_PFAD[p].k]}</span></h2><div class="regeltext"><p class="laden">wird geladen …</p></div></div>`).join("")}</div>`
+    : `<div class="karte leer"><p>Noch nichts gemerkt.</p><p class="hinweis">Öffne eine Regel oder Einheit und tippe auf den Stern.</p></div>`}`;
+  for (const p of liste) {
+    try {
+      const d = await ladeSeite(p);
+      const box = inhalt.querySelector(`[data-spick="${CSS.escape(p)}"] .regeltext`);
+      if (box) { box.innerHTML = (d.h || "").replace(/<h2>(FAQ zu dieser Regel|Siehe auch)<\/h2>.*$/s, ""); hebeWerteHervor(box); }
+    } catch {}
+  }
+}
+
+function zeigePhasen() {
+  const ph = PHASEN.find(x => x.p === phase) || PHASEN[3];
+  const regeln = INDEX.filter(d => d.cp === ph.p).sort((a, b) => a.t.localeCompare(b.t));
+  inhalt.innerHTML = `<section><h1 class="kapitel">Spielphasen</h1></section>
+    <div class="chips" role="tablist">${PHASEN.map(x => `<button class="chip ${x.p === ph.p ? "aktiv" : ""}" role="tab" aria-selected="${x.p === ph.p}" data-phasenwahl="${x.p}">${x.n}</button>`).join("")}</div>
+    <section><p class="label">${regeln.length} Seiten · Kapitel ${esc(NACH_PFAD[ph.p]?.t || ph.n)}</p>
+    <ul class="liste">${NACH_PFAD[ph.p] ? zeile(NACH_PFAD[ph.p], [], "Kapitelübersicht") : ""}${regeln.map(d => zeile(d)).join("")}</ul></section>`;
+}
+
+function zeigeVerlauf() {
+  const liste = verlauf.map(p => NACH_PFAD[p]).filter(Boolean);
+  inhalt.innerHTML = `<section><h1 class="kapitel">Verlauf</h1></section>
+    ${liste.length ? `<ul class="liste">${liste.map(d => zeile(d)).join("")}</ul><div><button class="knopf-rand" id="verlauf-leeren">Verlauf leeren</button></div>`
+    : `<div class="karte leer"><p>Noch nichts angesehen.</p></div>`}`;
+}
+
+// ---------- Routing ----------
+let sheetAnker = null;
+const aktuellerPfad = () => location.hash.startsWith("#s") ? hashZuPfad(location.hash) : null;
+function route() {
+  if (!INDEX.length) return;
+  const h = location.hash.slice(1);
+  let tab = "start";
+  if (h.startsWith("s-") || h === "s") { tab = null; zeigeSeite(hashZuPfad(location.hash), sheetAnker); sheetAnker = null; }
+  else if (h === "armee") { tab = "armee"; zeigeArmee(); }
+  else if (h === "phasen") { tab = "phasen"; zeigePhasen(); }
+  else if (h === "verlauf") { tab = "verlauf"; zeigeVerlauf(); }
+  else zeigeStart();
+  document.querySelectorAll(".leiste button").forEach(b => b.setAttribute("aria-current", b.dataset.ziel === tab ? "page" : "false"));
+  const z = $("fav-zahl"); z.textContent = favs.length; z.hidden = !favs.length;
+}
+function geh(hash) { if (location.hash === "#" + hash || (!hash && !location.hash)) route(); else location.hash = hash; }
+function oeffnePfad(pfadMitAnker) {
+  const [p, anker] = pfadMitAnker.split("#");
+  sheetAnker = anker || null;
+  eingabe.value = ""; $("leeren").hidden = true;
+  geh(pfadZuHash(p));
+}
+
+// ---------- Bottom-Sheet ----------
+const sheet = $("sheet"), schleier = $("schleier");
+let letzterFokus = null;
+function oeffneSheet(html) {
+  letzterFokus = document.activeElement;
+  sheet.innerHTML = `<div class="griff"></div>` + html;
+  sheet.hidden = false; schleier.hidden = false; sheet.scrollTop = 0;
+  requestAnimationFrame(() => { sheet.classList.add("offen"); schleier.classList.add("offen"); });
+  sheet.querySelector("button")?.focus({ preventScroll: true });
+}
+function schliesseSheet() {
+  sheet.classList.remove("offen"); schleier.classList.remove("offen");
+  setTimeout(() => { sheet.hidden = true; schleier.hidden = true; }, 250);
+  letzterFokus?.focus?.({ preventScroll: true });
+}
+async function verweisSheet(pfadMitAnker) {
+  const [p, anker] = pfadMitAnker.split("#");
+  const d0 = NACH_PFAD[p];
+  if (!d0) return;
+  oeffneSheet(`<p class="label">${esc(d0.c || ART[d0.k])}</p><h2 class="titel" id="sheet-titel">${esc(d0.t)}</h2><p class="laden">wird geladen …</p>`);
+  try {
+    const d = await ladeSeite(p);
+    let h = d.h || "";
+    if (anker) { const tmp = document.createElement("div"); tmp.innerHTML = h; const el = tmp.querySelector("#" + CSS.escape(anker)); if (el) { el.open = true; el.removeAttribute("id"); h = el.outerHTML; } }
+    h = h.replace(/<h2>(FAQ zu dieser Regel|Siehe auch|Inhalt)<\/h2>.*$/s, "");
+    sheet.innerHTML = `<div class="griff"></div><p class="label">${esc(d.c || ART[d.k])}</p><h2 class="titel" id="sheet-titel">${esc(d.t)}</h2>
+      <div class="regeltext" id="sheet-text">${h || `<p class="hinweis">Kurzansicht nicht verfügbar.</p>`}</div>
+      <div class="aktionen"><button class="knopf" data-p="${esc(pfadMitAnker)}" data-schliessen>Ganze Seite öffnen</button><button class="knopf-rand" data-schliessen>Schließen</button></div>`;
+    hebeWerteHervor($("sheet-text"));
+  } catch { sheet.querySelector(".laden").textContent = "Konnte nicht geladen werden."; }
+}
+function einstSheet() {
+  const gr = [15, 17, 20], th = [["system", "System"], ["light", "Hell"], ["dark", "Dunkel"]];
+  oeffneSheet(`<h2 class="titel" id="sheet-titel">Anzeige</h2><div class="einst">
+    <div class="einst-zeile"><span>Schriftgröße</span><div class="seg">${gr.map((g, i) => `<button data-groesse="${g}" aria-pressed="${einst.groesse === g}">${["A−", "A", "A+"][i]}</button>`).join("")}</div></div>
+    <div class="einst-zeile"><span>Farbschema</span><div class="seg">${th.map(([v, l]) => `<button data-themewahl="${v}" aria-pressed="${einst.theme === v}">${l}</button>`).join("")}</div></div>
+    <p class="hinweis">${INDEX.length} Seiten aus <a href="${QUELLE}" target="_blank" rel="noopener">tow.whfb.app</a>, Stand ${esc(STAND)}. Privates Archiv, nicht mit Games Workshop verbunden.</p>
+    <p class="hinweis">Tastatur: <b>/</b> springt in die Suche, <b>Esc</b> schließt dieses Fenster.</p>
+    <div class="einst-zeile"><span>Auf diesem Gerät abmelden</span><button class="knopf-rand" id="abmelden">Abmelden</button></div>
+    <div class="aktionen"><button class="knopf" data-schliessen>Fertig</button></div></div>`);
+}
+
+// ---------- Ereignisse ----------
+document.addEventListener("click", e => {
+  const a = e.target.closest(".regeltext a[data-p]");
+  if (a) { e.preventDefault(); const p = a.dataset.p; return inhalt.contains(a) || sheet.contains(a) ? verweisSheet(p) : null; }
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.hasAttribute("data-schliessen")) schliesseSheet();
+  if (t.dataset.p) return oeffnePfad(t.dataset.p);
+  if (t.dataset.ziel) {
+    if (t.dataset.ziel === "start") { eingabe.value = ""; $("leeren").hidden = true; if (location.hash) history.replaceState(null, "", location.pathname + location.search); route(); window.scrollTo(0, 0); }
+    else geh(t.dataset.ziel);
+    return;
+  }
+  if (t.dataset.phase) { phase = t.dataset.phase; speicher.schreib("phase", phase); return geh("phasen"); }
+  if (t.dataset.phasenwahl) { phase = t.dataset.phasenwahl; speicher.schreib("phase", phase); return zeigePhasen(); }
+  if (t.dataset.fav) {
+    const p = t.dataset.fav;
+    favs = favs.includes(p) ? favs.filter(f => f !== p) : [...favs, p];
+    speicher.schreib("favs2", favs);
+    const an = favs.includes(p);
+    t.setAttribute("aria-pressed", an); t.setAttribute("aria-label", an ? "Aus Meine Armee entfernen" : "Zu Meine Armee hinzufügen");
+    t.querySelector("svg").setAttribute("fill", an ? "currentColor" : "none");
+    const z = $("fav-zahl"); z.textContent = favs.length; z.hidden = !favs.length;
+    return;
+  }
+  if (t.id === "mehr") { zeigeAnzahl += 30; return zeigeSuche(eingabe.value.trim()); }
+  if (t.id === "verlauf-leeren") { verlauf = []; speicher.schreib("verlauf2", verlauf); return zeigeVerlauf(); }
+  if (t.id === "einst-knopf") return einstSheet();
+  if (t.id === "abmelden") { try { localStorage.removeItem("rix-key"); sessionStorage.removeItem("rix-key"); } catch {} location.hash = ""; location.reload(); return; }
+  if (t.dataset.groesse) { einst.groesse = +t.dataset.groesse; speicher.schreib("einst", einst); wendeEinstAn(); return einstSheet(); }
+  if (t.dataset.themewahl) { einst.theme = t.dataset.themewahl; speicher.schreib("einst", einst); wendeEinstAn(); return einstSheet(); }
+});
+schleier.addEventListener("click", schliesseSheet);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !sheet.hidden) schliesseSheet();
+  if ((e.key === "/" || (e.key === "k" && (e.ctrlKey || e.metaKey))) && document.activeElement !== eingabe) { e.preventDefault(); eingabe.focus(); }
+});
+let suchTimer;
+eingabe.addEventListener("input", () => {
+  $("leeren").hidden = !eingabe.value; zeigeAnzahl = 30;
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  document.querySelectorAll(".leiste button").forEach(b => b.setAttribute("aria-current", b.dataset.ziel === "start" ? "page" : "false"));
+  clearTimeout(suchTimer); suchTimer = setTimeout(zeigeStart, 80);
+});
+eingabe.addEventListener("keydown", e => {
+  if (e.key === "Enter") { const erste = inhalt.querySelector(".zeile"); if (erste) erste.click(); }
+});
+$("leeren").addEventListener("click", () => { eingabe.value = ""; $("leeren").hidden = true; zeigeStart(); eingabe.focus(); });
+window.addEventListener("hashchange", route);
+
+// ---------- Start: Passwort, dann Daten ----------
+let INFO = null;
+function speichereKey(roh, merken) {
+  const wert = JSON.stringify({ salz: INFO.salz, key: btoa(String.fromCharCode(...roh)) });
+  try { (merken ? localStorage : sessionStorage).setItem("rix-key", wert); } catch {}
+}
+async function gemerkterKey() {
+  let wert = null;
+  try { wert = localStorage.getItem("rix-key") || sessionStorage.getItem("rix-key"); } catch {}
+  if (!wert) return null;
+  try {
+    const { salz, key } = JSON.parse(wert);
+    if (salz !== INFO.salz) return null;   // Passwort wurde geändert
+    const k = await crypto.subtle.importKey("raw", b64(key), "AES-GCM", true, ["decrypt"]);
+    return (await pruefe(k)) ? k : null;
+  } catch { return null; }
+}
+async function pruefe(key) {
+  try { return new TextDecoder().decode(await entschluessle(b64(INFO.pruefung), key)) === "OTZMO-TOW Regelindex"; }
+  catch { return false; }
+}
+function zeigeTor(fehler = "") {
+  $("app").classList.add("gesperrt");
+  $("status").innerHTML = `<i style="background:var(--bronze)"></i> Geschützter Bereich`;
+  inhalt.innerHTML = `<section class="tor">
+    <h1>Regelindex</h1>
+    <p class="hinweis" style="text-align:center">Alle Regeln von Warhammer: The Old World zum Nachschlagen – nur für unsere Spielgruppe.</p>
+    <form id="tor-form" class="karte">
+      <label for="tor-pw" class="label">Passwort</label>
+      <input type="password" id="tor-pw" autocomplete="current-password" required>
+      <label class="merken"><input type="checkbox" id="tor-merken" checked> Auf diesem Gerät merken</label>
+      <button class="knopf" type="submit" id="tor-knopf">Öffnen</button>
+      ${fehler ? `<p class="fehler" role="alert">${esc(fehler)}</p>` : ""}
+    </form>
+    <p class="hinweis" style="text-align:center"><a href="../">Zurück zu OTZMO-TOW</a></p>
+  </section>`;
+  $("tor-pw").focus();
+  $("tor-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const knopf = $("tor-knopf"); knopf.disabled = true; knopf.textContent = "Wird geprüft …";
+    try {
+      const key = await leiteAb($("tor-pw").value, INFO);
+      if (!(await pruefe(key))) return zeigeTor("Das Passwort stimmt nicht.");
+      speichereKey(new Uint8Array(await crypto.subtle.exportKey("raw", key)), $("tor-merken").checked);
+      await oeffne(key);
+    } catch { zeigeTor("Das hat nicht geklappt. Versuch es noch einmal."); }
+  });
+}
+async function oeffne(key) {
+  SCHLUESSEL = key;
+  $("app").classList.remove("gesperrt");
+  inhalt.innerHTML = `<p class="laden">Regeln werden geladen …</p>`;
+  const daten = await ladeVerschluesselt("daten/index.txt");
+  STAND = daten.stand; INDEX = daten.seiten;
+  NACH_PFAD = Object.fromEntries(INDEX.map(d => [d.p, d]));
+  $("status").innerHTML = `<i></i> ${INDEX.length} Seiten · Stand ${esc(new Date(STAND).toLocaleDateString("de-DE"))}`;
+  route();
+  setTimeout(() => {
+    suchindex = new MiniSearch({ idField: "p", fields: ["t", "c", "x"], storeFields: [],
+      processTerm: t => t.toLowerCase().replace(/[’']/g, "") });
+    suchindex.addAll(INDEX);
+    if (eingabe.value.trim()) zeigeStart();
+  }, 0);
+}
+(async () => {
+  try {
+    if (!crypto?.subtle || typeof DecompressionStream === "undefined") throw new Error("alt");
+    INFO = await (await fetch("daten/schluessel.json", { cache: "no-cache" })).json();
+    const key = await gemerkterKey();
+    if (key) await oeffne(key); else zeigeTor();
+  } catch (e) {
+    inhalt.innerHTML = `<div class="karte leer"><p>Der Regelindex konnte nicht geladen werden.</p><p class="hinweis">Prüfe die Verbindung und lade die Seite neu. Sehr alte Browser werden nicht unterstützt.</p></div>`;
+    $("status").textContent = "Keine Daten";
+  }
+})();
+</script>
+</body>
+</html>
