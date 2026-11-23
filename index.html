@@ -787,6 +787,7 @@ Deine Armeeliste kannst du online mit dem Armeebuilder zusammenstellen. Die <b>L
       <button id="mirrorHBtn" title="Spiegelt Gelände und Zonen links/rechts">⇋ Horizontal spiegeln</button>
       <button id="mirrorVBtn" title="Spiegelt Gelände und Zonen oben/unten">⇵ Vertikal spiegeln</button>
       <button id="randomBtn" title="Würfelt unter den angehakten Aufstellungszonen und Missionen, dazu Spiegelung und Geländeplatzierung">🎲 Zufällige Karte</button>
+      <button id="germanCompBtn" hidden title="Wählt zufällig eine der 5 Karten aus dem GermanComp Map Pack. Aufstellungszone und Missionen werden wie bei der Zufallskarte gewürfelt.">🗺 GermanCompMap</button>
     </div>
 
     <div class="board-outer">
@@ -1813,6 +1814,7 @@ function kartenbau(opt) {
       if (gezogen.every(m => m === null || m === undefined || MISSIONEN.includes(m))) {
         wurf = { zone: data.wurf.zone, missionen: gezogen.map(m => m || null) };
         if (opt.ereignis && Number.isInteger(data.wurf.ereignis) && data.wurf.ereignis >= 2 && data.wurf.ereignis <= 12) wurf.ereignis = data.wurf.ereignis;
+        if (opt.germanComp && typeof data.wurf.karte === 'string' && /^GermanComp Map [1-9]$/.test(data.wurf.karte)) wurf.karte = data.wurf.karte;
       }
     }
     if (Array.isArray(data.customTypes)) {
@@ -2623,6 +2625,29 @@ function kartenbau(opt) {
 
   $('randomBtn').addEventListener('click', randomizeMap);
 
+  /* GermanComp Map Pack: Zone und Missionen werden wie bei der Zufallskarte
+     gewuerfelt, das Gelaende kommt fest aus einer der Karten. Koordinaten im Pack:
+     Mitte des Stuecks, gemessen ab der unteren linken Ecke (wie hier). */
+  if (opt.germanComp) {
+    $('germanCompBtn').hidden = false;
+    $('germanCompBtn').addEventListener('click', () => {
+      randomizeMap();
+      const nr = Math.floor(Math.random() * opt.germanComp.length);
+      board.querySelectorAll('.piece').forEach(el => el.remove());
+      pieces = [];
+      opt.germanComp[nr].forEach(([name, cx, cy, ang]) => {
+        const t = defaultTypes.find(d => d.name === name);
+        if (!t) return;
+        const [bw, bd] = bbox(t.w, t.d, ang);
+        placePieceExact(t, cx - bw / 2, cy - bd / 2, t.w, t.d, ang);
+      });
+      wurf.karte = 'GermanComp Map ' + (nr + 1);
+      zeigeWurf();
+      renderTreasures();
+      saveState();
+    });
+  }
+
   /* --- Auswahl fuer den Kartenwuerfel: gewuerfelt wird unter den Haken ---
      Die Wahl reist mit dem Kartenstand, damit Haken und Karte zusammenpassen. */
   function angehakt(id) {
@@ -2639,6 +2664,7 @@ function kartenbau(opt) {
     const zone = $('wahlZone').querySelector(`input[value="${wurf.zone}"]`).parentElement.textContent.trim();
     const teile = [['Aufstellungszone', zone]].concat(GRUPPEN.map((g, gi) =>
       [g.kurz, wurf.missionen[gi] ? missionsName(wurf.missionen[gi]) : 'keine']));
+    if (wurf.karte) teile.push(['Gelände', wurf.karte]);
     if (wurf.ereignis) teile.push(['Zufallsereignis', wurf.ereignis + ' – ' + ereignis(wurf.ereignis).name]);
     return teile;
   }
@@ -2966,6 +2992,13 @@ kartenbau({ endung: '', w: 48, h: 36, kreis: 14, umkreis: 16, zonenTiefe: 10, pa
                           { wert: 'schaetze', name: 'Schätze', art: 'schaetze', regel: 'mission-1-body' },
                           { wert: 'versorgung', name: 'Versorgungswagen', art: 'keine', regel: 'mission-3-body' }] }] });
 kartenbau({ endung: '-core', w: 72, h: 48, kreis: 18, umkreis: 22, zonenTiefe: 12, passAbstand: 24,
+            // GermanComp Map Pack (LD3): [Gelände, Mitte x, Mitte y ab unten links, Drehung]
+            germanComp: [
+              [['Hügel', 23, 19, 0], ['Wald', 25, 34, 90], ['Wald', 49, 12, 90], ['Feld', 7, 21, 90], ['See', 67, 27, 90], ['Gebäude', 48, 35, 0]],
+              [['Hügel', 23, 24, 0], ['Wald', 30, 37, 90], ['Wald', 54, 21, 90], ['Feld', 10, 18, 90], ['See', 48, 37, 0], ['Gebäude', 40, 10, 0]],
+              [['Hügel', 13, 24, 0], ['Wald', 22, 36, 90], ['Wald', 55, 13, 90], ['Feld', 32, 12, 90], ['See', 58, 40, 90], ['Gebäude', 48, 28, 0]],
+              [['Hügel', 12, 24, 0], ['Wald', 23, 38, 90], ['Wald', 49, 14, 90], ['Ruine', 56, 40, 0], ['See', 17, 9, 90], ['Gebäude', 61, 26, 0]],
+              [['Hügel', 23, 27, 0], ['Wald', 15, 40, 90], ['Wald', 41, 36, 90], ['Ruine', 40, 11, 0], ['Feld', 58, 24, 90], ['Gebäude', 16, 14, 90]]],
             speicher: 'coreBattleBuilderState', datei: 'core-battle-karte.png', auffrischen: '__refreshCore',
             blatt: { lang: 'en', titel: 'Core Battle', zone: 'Deployment', keine: 'none', spalten: 3,
                      // englische Namen der Aufstellungszonen
